@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Java ${{ matrix.java-version }} sample
+    name: Build with Java ${{ matrix.java-version }} (Distribution ${{ matrix.distribution }})
     runs-on: ubuntu-latest
 
     strategy:
