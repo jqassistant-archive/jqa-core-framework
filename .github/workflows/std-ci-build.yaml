@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java-version: [ 1.8.0 ]
+        java-version: [ 8 ]
         distribution: [temurin, microsoft, adopt, adopt-openj9, zulu]
 
     steps:
