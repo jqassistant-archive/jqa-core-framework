@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Build with Java ${{ matrix.java-version }} (Distribution ${{ matrix.distribution }})
+    name: Build with Java ${{ matrix.java-version }} ({{ matrix.distribution }})
     runs-on: ubuntu-latest
 
     strategy:
@@ -39,6 +39,7 @@ jobs:
             ${{ runner.os }}-maven-          
 
       - name: Compile only
+        shell: bash
         run: |
           mvn \
             -DskipTests=true -Djqassistant.skip=true \
