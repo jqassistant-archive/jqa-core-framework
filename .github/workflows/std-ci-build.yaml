@@ -41,7 +41,7 @@ jobs:
       - name: Compile only
         run: |
           mvn \
-            -DskipTests -Djqassistant.skip \
+            -DskipTests=true -Djqassistant.skip=true \
             --batch-mode --no-transfer-progress \ 
             clean package
 
