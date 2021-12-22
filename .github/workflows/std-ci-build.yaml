@@ -47,7 +47,31 @@ jobs:
         shell: bash
         run:
           mvn 
-            -DskipTests=true -Djqassistant.skip=true 
+            -DskipTests=true -DskipITs=true -Djqassistant.skip=true 
+            --batch-mode --no-transfer-progress 
+            clean package
+
+      - name: Run Unit Tests
+        shell: bash
+        run:
+          mvn
+            -DskipTests=false -DskipITs=true -Djqassistant.skip=true 
+            --batch-mode --no-transfer-progress 
+            clean package
+
+      - name: Run Integration Tests
+        shell: bash
+        run:
+          mvn
+            -DskipTests=true -DskipITs=false -Djqassistant.skip=true 
+            --batch-mode --no-transfer-progress 
+            clean package
+
+      - name: Run jQA Analysis and Verification
+        shell: bash
+        run:
+          mvn
+            -DskipTests=true -DskipITs=true -Djqassistant.skip=false 
             --batch-mode --no-transfer-progress 
             clean package
 
