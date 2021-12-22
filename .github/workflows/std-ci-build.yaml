@@ -11,12 +11,14 @@ on:
 
 jobs:
   build:
+    name: Java ${{ matrix.java-version }} sample
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         java-version: [ 1.8.0 ]
+        distribution: [temurin, microsoft, adopt-openj9, zulu]
 
     steps:
       - name: Checkout
@@ -26,6 +28,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ matrix.java-version }}
+          distribution: ${{ matrix.distribution }}
 
       - name: Cache local Maven repository
         uses: actions/cache@v2
