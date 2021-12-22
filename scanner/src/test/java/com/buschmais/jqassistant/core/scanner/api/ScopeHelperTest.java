@@ -37,6 +37,6 @@ class ScopeHelperTest {
     private void verifyScopedResources(List<ScopedResource> scopedResources) {
         assertThat(scopedResources).hasSize(2);
         assertThat(scopedResources).containsExactly(ScopedResource.builder().resource("build/images").build(),
-                ScopedResource.builder().resource("build/classes").scopeName("java:classpath").build());
+                ScopedResource.builder().resource("build/classeas").scopeName("java:classpath").build());
     }
 }
