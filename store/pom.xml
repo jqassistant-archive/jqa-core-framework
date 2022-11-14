@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.buschmais.jqassistant.core</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.12.0-SNAPSHOT</version>
+		<version>1.13.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>store</artifactId>
 	<name>jQAssistant Core Store</name>
@@ -48,11 +48,9 @@
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.impl</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.neo4j.remote</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <!-- XO dependencies // end -->

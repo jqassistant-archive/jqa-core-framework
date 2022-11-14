@@ -1,13 +1,20 @@
 package com.buschmais.jqassistant.core.analysis.impl;
 
+import com.buschmais.jqassistant.core.report.api.configuration.Report;
 import com.buschmais.jqassistant.core.report.api.model.Result;
-import com.buschmais.jqassistant.core.rule.api.model.Concept;
-import com.buschmais.jqassistant.core.rule.api.model.Constraint;
-import com.buschmais.jqassistant.core.rule.api.model.ExecutableRule;
+import com.buschmais.jqassistant.core.rule.api.model.*;
 
-public abstract class AbstractMinMaxVerificationStrategy {
+import lombok.RequiredArgsConstructor;
 
-    protected <T extends ExecutableRule> Result.Status getStatus(T executable, int value, Integer min, Integer max) {
+import static com.buschmais.jqassistant.core.report.api.model.Result.Status.*;
+import static lombok.AccessLevel.PROTECTED;
+
+@RequiredArgsConstructor(access = PROTECTED)
+public abstract class AbstractMinMaxVerificationStrategy<T extends Verification> implements VerificationStrategy<T> {
+
+    private final Report configuration;
+
+    protected <T extends ExecutableRule> Result.Status getStatus(T executable, Severity severity, int value, Integer min, Integer max) {
         if (min == null && max == null) {
             if (executable instanceof Concept) {
                 min = 1;
@@ -16,7 +23,23 @@ public abstract class AbstractMinMaxVerificationStrategy {
                 max = 0;
             }
         }
-        return (min == null || value >= min) && (max == null || value <= max) ? Result.Status.SUCCESS : Result.Status.FAILURE;
+        boolean success = (min == null || value >= min) && (max == null || value <= max);
+        return getStatus(severity, success);
+    }
+
+    private Result.Status getStatus(Severity severity, boolean success) {
+        if (!success) {
+            Severity.Threshold failOnSeverity = configuration.failOnSeverity();
+            Severity.Threshold warnOnSeverity = configuration.warnOnSeverity();
+            if (severity.exceeds(failOnSeverity)) {
+                return FAILURE;
+            } else {
+                if (severity.exceeds(warnOnSeverity)) {
+                    return WARNING;
+                }
+            }
+        }
+        return SUCCESS;
     }
 
 }

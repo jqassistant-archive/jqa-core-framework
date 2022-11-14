@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.buschmais.jqassistant.core</groupId>
         <artifactId>parent</artifactId>
-        <version>1.12.0-SNAPSHOT</version>
+        <version>1.13.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>rule</artifactId>
@@ -67,14 +67,6 @@
         <dependency>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoctorj</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jruby</groupId>
-            <artifactId>jruby-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jruby</groupId>
-            <artifactId>jruby-stdlib</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

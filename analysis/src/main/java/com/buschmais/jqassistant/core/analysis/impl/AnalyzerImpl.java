@@ -1,7 +1,6 @@
 package com.buschmais.jqassistant.core.analysis.impl;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.buschmais.jqassistant.core.analysis.api.Analyzer;
@@ -14,7 +13,6 @@ import com.buschmais.jqassistant.core.rule.api.executor.RuleVisitor;
 import com.buschmais.jqassistant.core.rule.api.model.RuleException;
 import com.buschmais.jqassistant.core.rule.api.model.RuleSelection;
 import com.buschmais.jqassistant.core.rule.api.model.RuleSet;
-import com.buschmais.jqassistant.core.rule.api.model.Verification;
 import com.buschmais.jqassistant.core.store.api.Store;
 
 import org.slf4j.Logger;
@@ -36,6 +34,8 @@ public class AnalyzerImpl implements Analyzer {
      *
      * @param configuration
      *            The configuration.
+     * @param classLoader
+     *            The plugin {@link ClassLoader}
      * @param store
      *            The store
      * @param ruleInterpreterPlugins
@@ -45,10 +45,10 @@ public class AnalyzerImpl implements Analyzer {
      * @param log
      *            The {@link Logger}.
      */
-    public AnalyzerImpl(Analyze configuration, Store store, Map<String, Collection<RuleInterpreterPlugin>> ruleInterpreterPlugins,
+    public AnalyzerImpl(Analyze configuration, ClassLoader classLoader, Store store, Map<String, Collection<RuleInterpreterPlugin>> ruleInterpreterPlugins,
             ReportPlugin reportPlugin, Logger log) {
         this.configuration = configuration;
-        this.analyzerContext = new AnalyzerContextImpl(store, log, initVerificationStrategies());
+        this.analyzerContext = new AnalyzerContextImpl(configuration, classLoader, store, log);
         this.ruleInterpreterPlugins = ruleInterpreterPlugins;
         this.reportPlugin = reportPlugin;
     }
@@ -65,14 +65,4 @@ public class AnalyzerImpl implements Analyzer {
         RuleSetExecutor executor = new RuleSetExecutor(visitor, configuration.rule());
         executor.execute(ruleSet, ruleSelection);
     }
-
-    private Map<Class<? extends Verification>, VerificationStrategy> initVerificationStrategies() {
-        Map<Class<? extends Verification>, VerificationStrategy> verificationStrategies = new HashMap<>();
-        RowCountVerificationStrategy rowCountVerificationStrategy = new RowCountVerificationStrategy();
-        verificationStrategies.put(rowCountVerificationStrategy.getVerificationType(), rowCountVerificationStrategy);
-        AggregationVerificationStrategy aggregationVerificationStrategy = new AggregationVerificationStrategy();
-        verificationStrategies.put(aggregationVerificationStrategy.getVerificationType(), aggregationVerificationStrategy);
-        return verificationStrategies;
-    }
-
 }

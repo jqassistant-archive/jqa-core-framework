@@ -3,13 +3,13 @@
     <parent>
         <groupId>com.buschmais.jqassistant</groupId>
         <artifactId>jqa-uber-parent</artifactId>
-        <version>1.12.0-SNAPSHOT</version>
+        <version>1.13.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>com.buschmais.jqassistant.core</groupId>
     <artifactId>parent</artifactId>
-    <version>1.12.0-SNAPSHOT</version>
+    <version>1.13.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>jQAssistant Core Framework</name>
@@ -40,20 +40,19 @@
     </scm>
 
     <properties>
-        <assertj.version>3.21.0</assertj.version>
         <checkstyle.version>8.29</checkstyle.version>
-        <jackson.version>2.10.1</jackson.version>
-        <jqa-asciidoctor-utilities.version>1.12.0-SNAPSHOT</jqa-asciidoctor-utilities.version>
-        <jqa-bom.version>1.12.0-SNAPSHOT</jqa-bom.version>
-        <jqa-own-constraints.version>1.12.0-SNAPSHOT</jqa-own-constraints.version>
-        <jqa-neo4jbackend.version>1.12.0-SNAPSHOT</jqa-neo4jbackend.version>
+        <jackson.version>2.13.2</jackson.version>
+        <jqa-asciidoctor-utilities.version>1.13.0-SNAPSHOT</jqa-asciidoctor-utilities.version>
+        <jqa-bom.version>1.13.0-SNAPSHOT</jqa-bom.version>
+        <jqa-own-constraints.version>1.13.0-SNAPSHOT</jqa-own-constraints.version>
+        <jqa-neo4jbackend.version>1.13.0-SNAPSHOT</jqa-neo4jbackend.version>
         <json-schema-validator.version>1.0.36</json-schema-validator.version>
         <org.hamcrest.version>2.0.0.0</org.hamcrest.version>
-        <org.asciidoctor.version>2.5.3</org.asciidoctor.version>
-        <org.asciidoctorj-diagram.version>2.2.1</org.asciidoctorj-diagram.version>
-        <net.sourceforge.plantuml.version>1.2022.2</net.sourceforge.plantuml.version>
+        <org.asciidoctor.version>2.5.7</org.asciidoctor.version>
+        <org.asciidoctorj-diagram.version>2.2.3</org.asciidoctorj-diagram.version>
+        <net.sourceforge.plantuml.version>1.2022.12</net.sourceforge.plantuml.version>
         <org.eclipse.elk.version>0.7.1</org.eclipse.elk.version>
-        <org.jruby.version>9.2.20.1</org.jruby.version>
+        <org.jruby.version>9.3.8.0</org.jruby.version>
         <org.glassfish.jaxb.version>2.4.0-b180830.0438</org.glassfish.jaxb.version>
         <org.mockito.version>2.23.4</org.mockito.version>
         <snakeyaml-engine.version>2.3</snakeyaml-engine.version>
@@ -144,19 +143,6 @@
                 <version>${json-schema-validator.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>${assertj.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junit.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>java-hamcrest</artifactId>
                 <version>${org.hamcrest.version}</version>
@@ -180,18 +166,13 @@
                 <exclusions>
                     <exclusion>
                         <groupId>org.jruby</groupId>
-                        <artifactId>jruby-complete</artifactId>
+                        <artifactId>jruby</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.jruby</groupId>
-                <artifactId>jruby-core</artifactId>
-                <version>${org.jruby.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jruby</groupId>
-                <artifactId>jruby-stdlib</artifactId>
+                <artifactId>jruby</artifactId>
                 <version>${org.jruby.version}</version>
             </dependency>
             <dependency>

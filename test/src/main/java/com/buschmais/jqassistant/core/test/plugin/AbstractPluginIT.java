@@ -43,6 +43,7 @@ import com.buschmais.jqassistant.core.scanner.spi.ScannerPluginRepository;
 import com.buschmais.jqassistant.core.shared.io.ClasspathResource;
 import com.buschmais.jqassistant.core.store.api.Store;
 import com.buschmais.jqassistant.core.store.api.StoreFactory;
+import com.buschmais.jqassistant.core.store.api.configuration.Remote;
 import com.buschmais.xo.api.Query;
 import com.buschmais.xo.api.Query.Result.CompositeRowObject;
 
@@ -101,7 +102,9 @@ public abstract class AbstractPluginIT {
         Method method = testInfo.getTestMethod()
             .orElseThrow(() -> new AssertionError("Unable to get the test method for test '" + testInfo.getDisplayName() + "'."));
         testStore = method.getAnnotation(TestStore.class);
-        Configuration configuration = createConfiguration(createConfigurationBuilder());
+        ConfigurationBuilder configurationBuilder = createConfigurationBuilder();
+        configure(configurationBuilder);
+        Configuration configuration = createConfiguration(configurationBuilder);
         outputDirectory = new File("target/jqassistant");
         outputDirectory.mkdirs();
         startStore(configuration.store(), testStore);
@@ -109,7 +112,10 @@ public abstract class AbstractPluginIT {
         initializeAnalyzer(configuration);
     }
 
-    protected ConfigurationBuilder createConfigurationBuilder() {
+    protected void configure(ConfigurationBuilder configurationBuilder) {
+    }
+
+    private ConfigurationBuilder createConfigurationBuilder() {
         ConfigurationBuilder configurationBuilder = new ConfigurationBuilder("ITConfigSource", 110);
         TestStore.Type type = testStore != null ? testStore.type() : TestStore.Type.MEMORY;
         switch (type) {
@@ -130,16 +136,12 @@ public abstract class AbstractPluginIT {
             } catch (URISyntaxException e) {
                 throw new IllegalArgumentException("Cannot create store URI", e);
             }
-            configurationBuilder.with(com.buschmais.jqassistant.core.store.api.configuration.Store.class,
-                com.buschmais.jqassistant.core.store.api.configuration.Store.ENCRYPTION, "NONE");
-            configurationBuilder.with(com.buschmais.jqassistant.core.store.api.configuration.Store.class,
-                com.buschmais.jqassistant.core.store.api.configuration.Store.USERNAME, "neo4j");
-            configurationBuilder.with(com.buschmais.jqassistant.core.store.api.configuration.Store.class,
-                com.buschmais.jqassistant.core.store.api.configuration.Store.PASSWORD, "jqassistant");
+            configurationBuilder.with(Remote.class, Remote.ENCRYPTION, "NONE");
+            configurationBuilder.with(Remote.class, Remote.USERNAME, "neo4j");
+            configurationBuilder.with(Remote.class, Remote.PASSWORD, "jqassistant");
             Properties properties = new Properties();
             properties.put("neo4j.remote.statement.log.level", "info");
-            configurationBuilder.with(com.buschmais.jqassistant.core.store.api.configuration.Store.class,
-                com.buschmais.jqassistant.core.store.api.configuration.Store.PROPERTIES, properties);
+            configurationBuilder.with(Remote.class, Remote.PROPERTIES, properties);
             break;
         default:
             throw new AssertionError("Test store type not supported: " + type);
@@ -162,7 +164,7 @@ public abstract class AbstractPluginIT {
      *
      * @return The  configuration.
      */
-    protected Configuration createConfiguration(ConfigurationBuilder configurationBuilder) {
+    private Configuration createConfiguration(ConfigurationBuilder configurationBuilder) {
         ConfigurationLoader configurationLoader = new ConfigurationLoaderImpl();
         return configurationLoader.load(Configuration.class, configurationBuilder.build());
     }
@@ -184,7 +186,7 @@ public abstract class AbstractPluginIT {
     }
 
     private void initializeAnalyzer(Configuration configuration) {
-        this.reportContext = new ReportContextImpl(store, outputDirectory);
+        this.reportContext = new ReportContextImpl(pluginRepository.getClassLoader(), store, outputDirectory);
         this.reportPlugin = getReportPlugin();
         this.analyzer = getAnalyzer(configuration);
     }
@@ -243,7 +245,7 @@ public abstract class AbstractPluginIT {
     }
 
     private Scanner getScanner(Configuration configuration) {
-        ScannerContext scannerContext = new ScannerContextImpl(store, outputDirectory);
+        ScannerContext scannerContext = new ScannerContextImpl(pluginRepository.getClassLoader(), store, outputDirectory);
         ScannerPluginRepository scannerPluginRepository = pluginRepository.getScannerPluginRepository();
         return new ScannerImpl(configuration.scan(), scannerContext, scannerPluginRepository);
     }
@@ -255,7 +257,7 @@ public abstract class AbstractPluginIT {
     }
 
     private Analyzer getAnalyzer(Configuration configuration) {
-        return new AnalyzerImpl(configuration.analyze(), store, getRuleInterpreterPlugins(), reportPlugin, LOGGER);
+        return new AnalyzerImpl(configuration.analyze(), pluginRepository.getClassLoader(), store, getRuleInterpreterPlugins(), reportPlugin, LOGGER);
     }
 
     private InMemoryReportPlugin getReportPlugin() {
