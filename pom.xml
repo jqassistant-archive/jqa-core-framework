@@ -220,46 +220,6 @@
     </dependencyManagement>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>attach-javadocs</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <quiet>true</quiet>
-                        <detectLinks>false</detectLinks>
-                        <detectOfflineLinks>false</detectOfflineLinks>
-                        <additionalOptions>
-                            <additionalOption>-Xdoclint:none</additionalOption>
-                            <additionalOption>--base-dir ${project.basedir}</additionalOption>
-                        </additionalOptions>
-                        <groups>
-                            <group>
-                                <title>Public API</title>
-                                <packages>com.buschmais.jqassistant.core.${project.artifactId}.api*</packages>
-                            </group>
-                        </groups>
-
-                        <source>1.8</source>
-                        <doclet>org.asciidoctor.Asciidoclet</doclet>
-                        <docletArtifact>
-                            <groupId>org.asciidoctor</groupId>
-                            <artifactId>asciidoclet</artifactId>
-                            <version>1.5.4</version>
-                        </docletArtifact>
-                        <!--<overview>src/main/java/overview.adoc</overview>-->
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -366,10 +326,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
