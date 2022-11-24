@@ -61,39 +61,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- todo java 11 -->
-            <!-- todo java 11 Vielleicht in das BOM? -->
-
-            <dependency>
-                <groupId>javax.annotation</groupId>
-                <artifactId>javax.annotation-api</artifactId>
-                <version>1.3.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <!--groupId>com.sun.xml.bind</groupId-->
-                <artifactId>jaxb-api</artifactId>
-                <!--
-                <groupId>jakarta.xml.bind</groupId>
-                <artifactId>jakarta.xml.bind-api</artifactId>
--->
-                <version>2.3.0</version>
-            </dependency>
-            <!--
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-core</artifactId>
-                <version>2.3.0</version>
-            </dependency>-->
-
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>2.3.0</version>
-            </dependency>
-
-            <!-- Ende für java 11 anpassungen -->
             <dependency>
                 <groupId>javax.annotation</groupId>
                 <artifactId>javax.annotation-api</artifactId>
@@ -115,12 +82,7 @@
             </dependency>
             <dependency>
                 <groupId>com.buschmais.jqassistant.neo4jserver</groupId>
-                <artifactId>bootstrap</artifactId>
-                <version>${jqa-neo4jbackend.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.buschmais.jqassistant.neo4jserver</groupId>
-                <artifactId>neo4jv3</artifactId>
+                <artifactId>embedded</artifactId>
                 <version>${jqa-neo4jbackend.version}</version>
             </dependency>
             <dependency>
@@ -378,3 +340,4 @@
     </pluginRepositories>
 
 </project>
+
