@@ -58,7 +58,7 @@ public abstract class AbstractGraphStore implements Store {
             .classLoader(ofNullable(storePluginRepository.getClassLoader()))
             .types(storePluginRepository.getDescriptorTypes())
             .validationMode(ValidationMode.NONE)
-     //       .clearAfterCompletion(false)
+            .clearAfterCompletion(false)
             .mappingConfiguration(XOUnit.MappingConfiguration.builder()
                 .strictValidation(true)
                 .build());
