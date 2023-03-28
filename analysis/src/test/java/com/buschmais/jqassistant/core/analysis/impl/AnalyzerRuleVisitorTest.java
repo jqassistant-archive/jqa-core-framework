@@ -8,10 +8,13 @@ import com.buschmais.jqassistant.core.analysis.api.RuleInterpreterPlugin;
 import com.buschmais.jqassistant.core.analysis.api.configuration.Analyze;
 import com.buschmais.jqassistant.core.analysis.api.model.ConceptDescriptor;
 import com.buschmais.jqassistant.core.report.api.ReportPlugin;
+import com.buschmais.jqassistant.core.report.api.model.Column;
 import com.buschmais.jqassistant.core.report.api.model.Result;
+import com.buschmais.jqassistant.core.report.api.model.Row;
 import com.buschmais.jqassistant.core.rule.api.model.*;
 import com.buschmais.jqassistant.core.rule.api.reader.RowCountVerification;
 import com.buschmais.jqassistant.core.rule.api.source.FileRuleSource;
+import com.buschmais.jqassistant.core.shared.transaction.Transactional;
 import com.buschmais.jqassistant.core.store.api.Store;
 import com.buschmais.xo.api.Query;
 import com.buschmais.xo.api.ResultIterator;
@@ -24,8 +27,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.slf4j.Logger;
 
+import static com.buschmais.jqassistant.core.report.api.ReportHelper.toColumn;
+import static com.buschmais.jqassistant.core.report.api.ReportHelper.toRow;
 import static com.buschmais.jqassistant.core.rule.api.model.Severity.*;
 import static java.util.Collections.emptyMap;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -51,9 +55,6 @@ class AnalyzerRuleVisitorTest {
 
     @Mock
     private Store store;
-
-    @Mock
-    private Logger logger;
 
     @Mock
     private ReportPlugin reportWriter;
@@ -94,8 +95,13 @@ class AnalyzerRuleVisitorTest {
 
         doReturn(store).when(analyzerContext)
             .getStore();
-        doReturn(logger).when(analyzerContext)
-            .getLogger();
+        doAnswer(invocation -> {
+            ((Transactional.TransactionalAction<?>) invocation.getArgument(0)).execute();
+            return null;
+        }).when(store)
+            .requireTransaction(any(Transactional.TransactionalAction.class));
+        doAnswer(invocation -> ((Transactional.TransactionalSupplier<?, ?>) invocation.getArgument(0)).execute()).when(store)
+            .requireTransaction(any(Transactional.TransactionalSupplier.class));
 
         List<RuleInterpreterPlugin> languagePlugins = new ArrayList<>();
         languagePlugins.add(new CypherRuleInterpreterPlugin());
@@ -112,16 +118,29 @@ class AnalyzerRuleVisitorTest {
      */
     @Test
     void columnOrder() throws RuleException {
+        doAnswer(i -> {
+            Object value = i.getArgument(0);
+            return toColumn(value);
+        }).when(analyzerContext)
+            .toColumn(any());
+        doAnswer(i -> {
+            ExecutableRule<?> rule = i.getArgument(0);
+            Map<String, Column<?>> columns = i.getArgument(1);
+            return toRow(rule, columns);
+        }).when(analyzerContext)
+            .toRow(any(ExecutableRule.class), anyMap());
+
         analyzerRuleVisitor.visitConcept(concept, Severity.MINOR);
 
         ArgumentCaptor<Result> resultCaptor = ArgumentCaptor.forClass(Result.class);
         verify(reportWriter).setResult(resultCaptor.capture());
+        verify(analyzerContext).toRow(any(ExecutableRule.class), anyMap());
         Result capturedResult = resultCaptor.getValue();
         assertThat("The reported column names must match the given column names.", capturedResult.getColumnNames(), equalTo(columnNames));
-        List<Map<String, Object>> capturedRows = capturedResult.getRows();
+        List<Row> capturedRows = capturedResult.getRows();
         assertThat("Expecting one row.", capturedRows.size(), equalTo(1));
-        Map<String, Object> capturedRow = capturedRows.get(0);
-        assertThat("The reported column names must match the given column names.", new ArrayList<>(capturedRow.keySet()), equalTo(columnNames));
+        Row capturedRow = capturedRows.get(0);
+        assertThat("The reported column names must match the given column names.", new ArrayList<>(capturedRow.getColumns().keySet()), equalTo(columnNames));
     }
 
     @Test
@@ -267,7 +286,7 @@ class AnalyzerRuleVisitorTest {
     }
 
     private Concept createConcept(String statement) {
-        Executable executable = new CypherExecutable(statement, true);
+        Executable executable = new CypherExecutable(statement);
         Parameter parameterWithoutDefaultValue = new Parameter(PARAMETER_WITHOUT_DEFAULT, Parameter.Type.STRING, null);
         Parameter parameterWithDefaultValue = new Parameter(PARAMETER_WITH_DEFAULT, Parameter.Type.STRING, "defaultValue");
         Map<String, Parameter> parameters = new HashMap<>();
@@ -289,7 +308,7 @@ class AnalyzerRuleVisitorTest {
     }
 
     private Constraint createConstraint(String statement) {
-        Executable executable = new CypherExecutable(statement, true);
+        Executable executable = new CypherExecutable(statement);
         Parameter parameterWithoutDefaultValue = new Parameter(PARAMETER_WITHOUT_DEFAULT, Parameter.Type.STRING, null);
         Parameter parameterWithDefaultValue = new Parameter(PARAMETER_WITH_DEFAULT, Parameter.Type.STRING, "defaultValue");
         Map<String, Parameter> parameters = new HashMap<>();
