@@ -6,7 +6,7 @@ public class TextUtil {
     }
 
     public static String removeIndent(String text) {
-        return text;
+        return text.trim();
     }
 
 }

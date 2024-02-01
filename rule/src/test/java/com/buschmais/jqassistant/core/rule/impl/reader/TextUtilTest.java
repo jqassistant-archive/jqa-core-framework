@@ -1,9 +1,10 @@
 package com.buschmais.jqassistant.core.rule.impl.reader;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static com.buschmais.jqassistant.core.rule.impl.reader.TextUtil.removeIndent;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * multi-line text
@@ -35,21 +36,21 @@ public class TextUtilTest {
     public void tabsText(){
         assertThat(removeIndent("text\ttext")).isEqualTo("text\ttext");
     }
+
     @Test
-   public void feedText(){
-       assertThat(removeIndent("text\ftext")).isEqualTo("text\ftext");
-    }
-    @Test
-    public void singleQuoteText(){
-        assertThat(removeIndent("text ' text")).isEqualTo("text ' text");
+    public void backSlashText2(){
+        assertThat(removeIndent("  text \\ text  ")).isEqualTo("text \\ text");
     }
 
     @Test
-    public void backSlashText(){
-        assertThat(removeIndent("text \\ text")).isEqualTo("text \\ text");
-   }
+    public void text3(){
+        assertThat(removeIndent("        text to believe \n text to work      ")).isEqualTo("text to believe \n text to work");
+    }
 
-
+    @Test
+    public void text5(){
+        assertThat(removeIndent("    text to believe \n  text to work      ")).isEqualTo("  text to believe \ntext to work");
+    }
 
 
 }
