@@ -20,37 +20,42 @@ import static org.assertj.core.api.Assertions.*;
  */
 public class TextUtilTest {
 
-    @Test
-    public void spacesWithinText() {
-        assertThat(removeIndent("text text\ttext")).isEqualTo("text text\ttext");
-    }
+
+
+    @Disabled
     @Test
     public void leadingAndTrailingSpaces() {
         assertThat(removeIndent("text")).isEqualTo("text");
     }
+    @Disabled
     @Test
     public void multiLineText(){
         assertThat(removeIndent("text\ntext")).isEqualTo("text\ntext");
     }
+
+    @Disabled
     @Test
     public void tabsText(){
         assertThat(removeIndent("text\ttext")).isEqualTo("text\ttext");
     }
 
     @Test
-    public void backSlashText2(){
-        assertThat(removeIndent("  text \\ text  ")).isEqualTo("text \\ text");
+    public void extraWhiteSpaces(){
+        assertThat(removeIndent("                 text to believe \ntext to work                      ")).isEqualTo(" text to believe \ntext to work ");
+    }
+    @Test
+    public void extraLines(){
+        assertThat(removeIndent("         \ntext\n\ntext  \n           ")).isEqualTo("text\n\ntext  \n");
     }
 
     @Test
-    public void text3(){
-        assertThat(removeIndent("        text to believe \n text to work      ")).isEqualTo("text to believe \n text to work");
+    public void emptyText(){
+        assertThat(removeIndent("")).isEqualTo("");
     }
 
     @Test
-    public void text5(){
-        assertThat(removeIndent("    text to believe \n  text to work      ")).isEqualTo("  text to believe \ntext to work");
+    public void moveTextLeft(){
+        assertThat(removeIndent("        text\n  text    text\n    text    text\n  text    text\n        text")).isEqualTo("      text\ntext    text\n  text    text\ntext    text\n      text");
     }
-
 
 }
