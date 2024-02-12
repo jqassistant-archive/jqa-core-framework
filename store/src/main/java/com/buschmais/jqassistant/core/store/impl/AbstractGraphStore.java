@@ -62,7 +62,7 @@ public abstract class AbstractGraphStore implements Store {
             .mappingConfiguration(XOUnit.MappingConfiguration.builder()
                 .strictValidation(true)
                 .build());
-        configure(builder, configuration);
+        configure(builder);
         xoManagerFactory = XO.createXOManagerFactory(builder.build());
         initialize(xoManagerFactory);
         xoManager = xoManagerFactory.createXOManager();
@@ -82,6 +82,7 @@ public abstract class AbstractGraphStore implements Store {
         if (xoManagerFactory != null) {
             xoManagerFactory.close();
         }
+        cleanup();
     }
 
     @Override
@@ -292,12 +293,14 @@ public abstract class AbstractGraphStore implements Store {
     /**
      * Configure store specific options.
      */
-    protected abstract XOUnit configure(XOUnit.XOUnitBuilder builder, com.buschmais.jqassistant.core.store.api.configuration.Store configuration);
+    protected abstract XOUnit configure(XOUnit.XOUnitBuilder builder);
 
     /**
      * Initialize the store.
      */
     protected abstract void initialize(XOManagerFactory xoManagerFactory);
+
+    protected abstract void cleanup();
 
     protected abstract int getAutocommitThreshold();
 
