@@ -1,6 +1,7 @@
 package com.buschmais.jqassistant.core.runtime.impl.plugin;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 import com.buschmais.jqassistant.core.runtime.api.plugin.PluginRepositoryException;
@@ -63,25 +64,24 @@ public class AetherArtifactProvider implements ArtifactProvider {
     private List<Dependency> getPluginDependencies(Plugin plugin) {
         List<Exclusion> exlusions = plugin.exclusions()
             .stream()
-            .map(exclusion -> getPluginExclusions(exclusion))
-            .flatMap(exclusions -> exclusions.stream())
+            .map(AetherArtifactProvider::getPluginExclusions)
+            .flatMap(Collection::stream)
             .collect(toList());
         return plugin.artifactId()
             .stream()
-            .map(artifactId -> getDependency(plugin, artifactId, exlusions))
+            .map(artifactId -> getDependency(plugin, artifactId.trim(), exlusions))
             .collect(toList());
     }
 
     private static Dependency getDependency(Plugin plugin, String artifactId, List<Exclusion> exlusions) {
-        Dependency dependency = new Dependency(new DefaultArtifact(plugin.groupId(), artifactId, plugin.classifier()
+        return new Dependency(new DefaultArtifact(plugin.groupId(), artifactId, plugin.classifier()
             .orElse(null), plugin.type(), plugin.version()), RUNTIME, false, exlusions);
-        return dependency;
     }
 
     private static List<Exclusion> getPluginExclusions(com.buschmais.jqassistant.core.shared.configuration.Exclusion exclusion) {
         return exclusion.artifactId()
             .stream()
-            .map(artifactId -> new Exclusion(exclusion.groupId(), artifactId, exclusion.classifier()
+            .map(artifactId -> new Exclusion(exclusion.groupId(), artifactId.trim(), exclusion.classifier()
                 .orElse(null), exclusion.type()))
             .collect(toList());
     }
