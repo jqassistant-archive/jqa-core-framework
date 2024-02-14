@@ -96,13 +96,8 @@ public class EmbeddedGraphStore extends AbstractGraphStore {
             try {
                 copyFileToDirectory(file, neo4jPluginDirectory);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException("Cannot copy Neo4j plugins to " + neo4jPluginDirectory, e);
             }
-        }
-        try {
-            Class.forName("io.netty.buffer.WrappedByteBuf");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
         log.info("Installed {} artifacts into Neo4j plugin directory {}.", files.size(), neo4jPluginDirectory);
         return of(neo4jPluginDirectory);
