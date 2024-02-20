@@ -17,7 +17,6 @@ import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.YamlUnicodeReader;
 
-import static com.buschmais.jqassistant.core.rule.impl.reader.IndentHelper.removeIndent;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
