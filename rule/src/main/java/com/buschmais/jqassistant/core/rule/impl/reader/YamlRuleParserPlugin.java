@@ -17,6 +17,7 @@ import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.YamlUnicodeReader;
 
+import static com.buschmais.jqassistant.core.rule.impl.reader.IndentHelper.removeIndent;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -193,7 +194,7 @@ public class YamlRuleParserPlugin extends AbstractRuleParserPlugin {
         throws RuleException {
 
         String id = (String) map.get(ID);
-        String description = (String) map.get(DESCRIPTION);
+        String description =IndentHelper.removeIndent((String) map.get(DESCRIPTION));
         String source = (String) map.get(SOURCE);
         String language = (String) map.get(LANGUAGE);
 
@@ -211,7 +212,7 @@ public class YamlRuleParserPlugin extends AbstractRuleParserPlugin {
         Report report = extractReportConfiguration(map);
         Severity severity = getSeverity((String) map.get(SEVERITY), defaultSeveritySupplier);
 
-        T rule = builder.id(id)
+        T rule = builder .id(id)
                         .description(description)
                         .severity(severity)
                         .executable(executable)
@@ -220,7 +221,6 @@ public class YamlRuleParserPlugin extends AbstractRuleParserPlugin {
                         .verification(verification)
                         .report(report)
                         .ruleSource(context.getSource()).build();
-
         consumer.consume(rule);
     }
 

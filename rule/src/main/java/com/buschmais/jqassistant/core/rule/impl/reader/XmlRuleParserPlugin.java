@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.function.Supplier;
-
 import javax.xml.validation.Schema;
-
 import com.buschmais.jqassistant.core.rule.api.model.*;
 import com.buschmais.jqassistant.core.rule.api.reader.AggregationVerification;
 import com.buschmais.jqassistant.core.rule.api.reader.RowCountVerification;
@@ -15,14 +13,17 @@ import com.buschmais.jqassistant.core.rule.api.source.RuleSource;
 import com.buschmais.jqassistant.core.rule.impl.SourceExecutable;
 import com.buschmais.jqassistant.core.shared.xml.JAXBUnmarshaller;
 
+
 import org.jqassistant.schema.rule.v2.*;
 
+import static com.buschmais.jqassistant.core.rule.impl.reader.IndentHelper.removeIndent;
 import static java.util.stream.Collectors.toSet;
 
 /**
  * A {@link RuleParserPlugin} implementation.
  */
 public class XmlRuleParserPlugin extends AbstractRuleParserPlugin {
+
 
     private static final String NAMESPACE_RULE_1_10 = "http://schema.jqassistant.org/rule/v2.0";
     private static final String RULES_SCHEMA_LOCATION = "/META-INF/rule/xsd/jqassistant-rule-v2.0.xsd";
@@ -46,7 +47,6 @@ public class XmlRuleParserPlugin extends AbstractRuleParserPlugin {
         List<JqassistantRules> rules = readXmlSource(ruleSource);
         convert(rules, ruleSource, ruleSetBuilder);
     }
-
     /**
      * Read rules from XML documents.
      *
@@ -103,7 +103,7 @@ public class XmlRuleParserPlugin extends AbstractRuleParserPlugin {
     }
 
     private Concept createConcept(String id, RuleSource ruleSource, ConceptType conceptType) throws RuleException {
-        String description = conceptType.getDescription();
+        String description = removeIndent(conceptType.getDescription());
         Executable executable = createExecutable(conceptType, conceptType.getSource(), conceptType.getCypher(), conceptType.getScript());
         Map<String, Parameter> parameters = getRequiredParameters(conceptType.getRequiresParameter());
         SeverityEnumType severityType = conceptType.getSeverity();
@@ -121,7 +121,7 @@ public class XmlRuleParserPlugin extends AbstractRuleParserPlugin {
 
     private Constraint createConstraint(String id, RuleSource ruleSource, ConstraintType constraintType) throws RuleException {
         Executable<?> executable = createExecutable(constraintType, constraintType.getSource(), constraintType.getCypher(), constraintType.getScript());
-        String description = constraintType.getDescription();
+        String description = removeIndent(constraintType.getDescription());
         Map<String, Parameter> parameters = getRequiredParameters(constraintType.getRequiresParameter());
         SeverityEnumType severityType = constraintType.getSeverity();
         Severity severity = getSeverity(severityType, this::getDefaultConstraintSeverity);

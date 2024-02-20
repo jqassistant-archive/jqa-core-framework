@@ -10,7 +10,9 @@ public class IndentHelper {
      * @return edited text without the unused whitespaces
      */
     public static String removeIndent(String text) {
-
+        if (text == null) {
+            return null;
+        }
         String textWithoutEmptyLines = removeEmptyLines(text);
         String[] lines = textWithoutEmptyLines.split("\\n");
         if (text.isBlank()) {
@@ -29,7 +31,7 @@ public class IndentHelper {
      * @return The text with indentation removed
      */
 
-    public static String removeIndent(String[] lines, int indent) {
+    private static String removeIndent(String[] lines, int indent) {
         StringBuilder resultBuilder = new StringBuilder();
         // We make a loop here to print the text LINE by LINE. it makes it easier to edit and change!
         for (int i = 0; i < lines.length; i++) {
@@ -60,7 +62,7 @@ public class IndentHelper {
      * @return the count which is currentColumn.
      */
 
-    public static int getIndent(String[] lines) {
+    private static int getIndent(String[] lines) {
         int currentColumn = 0;
         while (true) {
             String prevChar = null;
@@ -89,7 +91,7 @@ public class IndentHelper {
      * @return text without trailing and leading  empty lines
      */
 
-    public static String removeEmptyLines(String text) {
+    private static String removeEmptyLines(String text) {
         String[] lines = text.split("\\n");
 
         // read the text from the top and give it a value, so we can print from this value.

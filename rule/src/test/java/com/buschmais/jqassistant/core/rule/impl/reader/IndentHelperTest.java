@@ -37,6 +37,7 @@ public class IndentHelperTest {
 
     @Test
     public void emptyText() {
+        assertThat(removeIndent(null)).isEqualTo(null);
         assertThat(removeIndent("")).isEqualTo("");
         assertThat(removeIndent("\n")).isEqualTo("");
     }
