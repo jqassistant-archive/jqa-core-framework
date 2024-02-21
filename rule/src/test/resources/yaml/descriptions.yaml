@@ -32,8 +32,10 @@ constraints:
       Cypher Constraint
   - id: "test:MultiMixEmptyLineDescription"
     description: |
+      
       When he arrived at the station,
 
       the bus had already left.
+
     source: |
       Cypher Constraint

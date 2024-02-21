@@ -12,19 +12,13 @@ import com.buschmais.jqassistant.core.rule.api.reader.RuleParserPlugin;
 import com.buschmais.jqassistant.core.rule.api.source.RuleSource;
 import com.buschmais.jqassistant.core.rule.impl.SourceExecutable;
 import com.buschmais.jqassistant.core.shared.xml.JAXBUnmarshaller;
-
-
 import org.jqassistant.schema.rule.v2.*;
-
 import static com.buschmais.jqassistant.core.rule.impl.reader.IndentHelper.removeIndent;
 import static java.util.stream.Collectors.toSet;
-
 /**
  * A {@link RuleParserPlugin} implementation.
  */
 public class XmlRuleParserPlugin extends AbstractRuleParserPlugin {
-
-
     private static final String NAMESPACE_RULE_1_10 = "http://schema.jqassistant.org/rule/v2.0";
     private static final String RULES_SCHEMA_LOCATION = "/META-INF/rule/xsd/jqassistant-rule-v2.0.xsd";
 
@@ -47,6 +41,7 @@ public class XmlRuleParserPlugin extends AbstractRuleParserPlugin {
         List<JqassistantRules> rules = readXmlSource(ruleSource);
         convert(rules, ruleSource, ruleSetBuilder);
     }
+
     /**
      * Read rules from XML documents.
      *

@@ -4,16 +4,16 @@ public class IndentHelper {
     /**
      * This class make the String more effective and understandable. by removing the extra spaces,lines and tabs.
      * even tho , there is some exceptions where if the tabs are not in order the whole class won't work!
-     * NOTE : Check the TextUtilTest.java to see the examples
+     * NOTE : Check the IndentHelperTest.java to see the examples
      *
-     * @param text
+     * @param text is the String or Description form the file or the input.
      * @return edited text without the unused whitespaces
      */
     public static String removeIndent(String text) {
         if (text == null) {
             return null;
         }
-        String textWithoutEmptyLines = removeEmptyLines(text);
+        String textWithoutEmptyLines = removeBlankLeadingAndTrailingLines(text);
         String[] lines = textWithoutEmptyLines.split("\\n");
         if (text.isBlank()) {
             return textWithoutEmptyLines;
@@ -25,7 +25,7 @@ public class IndentHelper {
     /**
      * Removes the specified indentation from each line in the provided array of lines. If it's needed.
      * Removes the trailing and leading spaces from each lines
-     *
+     * HINT : only indent is considered which contains exactly the same characters across all lines ignoring blank lines.
      * @param lines  An array of strings representing lines of text
      * @param indent The number of leading whitespace characters to remove from each line
      * @return The text with indentation removed
@@ -33,9 +33,8 @@ public class IndentHelper {
 
     private static String removeIndent(String[] lines, int indent) {
         StringBuilder resultBuilder = new StringBuilder();
-        // We make a loop here to print the text LINE by LINE. it makes it easier to edit and change!
         for (int i = 0; i < lines.length; i++) {
-            // We replace all trailing whitespaces from each line. to make it simpler!
+            // We replace all trailing whitespaces from each line.
             String line = lines[i].replaceAll("\\s+$", "");
             if (!line.isBlank()) {
                 resultBuilder.append(line.substring(indent));
@@ -51,13 +50,8 @@ public class IndentHelper {
     }
 
     /**
-     * In this method we read the text line by line vertically (in columns) . specially to read  spaces or tabs.
-     * with giving the spaces and tabs a value we can just do anything with it (example : shifting the text to the left,
-     * so we remove the extra leading white spaces from each line equally)
-     * with reading the lines we use Chars. so we can with chars easily move it and match it.
-     * about matching  it, we use previousChars and currentChar. to see if the spaces in all lines are in same
-     * place/position. with that we can delete it easily.
-     *
+     * the indent of a text block is determined by identifying the sequence
+     * of blank characters that is shared/the same across all lines of the text block.
      * @param lines
      * @return the count which is currentColumn.
      */
@@ -91,7 +85,7 @@ public class IndentHelper {
      * @return text without trailing and leading  empty lines
      */
 
-    private static String removeEmptyLines(String text) {
+    private static String removeBlankLeadingAndTrailingLines(String text) {
         String[] lines = text.split("\\n");
 
         // read the text from the top and give it a value, so we can print from this value.
