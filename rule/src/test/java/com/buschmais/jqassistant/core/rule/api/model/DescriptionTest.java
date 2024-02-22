@@ -1,6 +1,11 @@
 package com.buschmais.jqassistant.core.rule.api.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
 import com.buschmais.jqassistant.core.rule.api.configuration.Rule;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,9 +13,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,14 +32,6 @@ class DescriptionTest {
         this.ruleSets = ruleSets;
     }
 
-    /**
-     * here we apply all rules to the description from xml file !
-     * We split it into 2 Conditions : 1.Concept
-     * 2.Constrain
-     *
-     * @param id       we get it from the Stream<Argument>
-     * @param expected we get it from the Stream<Argument>
-     */
     @ParameterizedTest
     @MethodSource
     void getIdAndResultOfConcepts(String id, String expected) throws RuleException {
@@ -63,11 +58,6 @@ class DescriptionTest {
         }
     }
 
-    /**
-     * in Stream<Argument>  we enter the ID of the xml file. then we enter the expectations from the description.
-     *
-     * @return ID , EXPECTATION
-     */
     public static Stream<Arguments> getIdAndResultOfConstraints() {
         return Stream.of(
                 Arguments.of("test:WithoutDescription", null),

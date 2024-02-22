@@ -1,13 +1,19 @@
 package com.buschmais.jqassistant.core.rule.impl.reader;
 
 public class IndentHelper {
+
+    private IndentHelper() {
+    }
+
     /**
-     * This class make the String more effective and understandable. by removing the extra spaces,lines and tabs.
-     * even tho , there is some exceptions where if the tabs are not in order the whole class won't work!
-     * NOTE : Check the IndentHelperTest.java to see the examples
+     * Removes blanks from the given text
+     * <ul>
+     *     <li>leading and trailing blank lines</li>
+     *     <li>indent consisting of blank characters that is equal in all lines</li>
+     * </ul>
      *
-     * @param text is the String or Description form the file or the input.
-     * @return edited text without the unused whitespaces
+     * @param text The text.
+     * @return The without blanks
      */
     public static String removeIndent(String text) {
         if (text == null) {
@@ -23,68 +29,12 @@ public class IndentHelper {
     }
 
     /**
-     * Removes the specified indentation from each line in the provided array of lines. If it's needed.
-     * Removes the trailing and leading spaces from each lines
-     * HINT : only indent is considered which contains exactly the same characters across all lines ignoring blank lines.
-     * @param lines  An array of strings representing lines of text
-     * @param indent The number of leading whitespace characters to remove from each line
-     * @return The text with indentation removed
-     */
-
-    private static String removeIndent(String[] lines, int indent) {
-        StringBuilder resultBuilder = new StringBuilder();
-        for (int i = 0; i < lines.length; i++) {
-            // We replace all trailing whitespaces from each line.
-            String line = lines[i].replaceAll("\\s+$", "");
-            if (!line.isBlank()) {
-                resultBuilder.append(line.substring(indent));
-            } else {
-                resultBuilder.append(lines[i]);
-            }
-            if (i < lines.length - 1) {
-                resultBuilder.append("\n");
-            }
-        }
-        return resultBuilder.toString();
-
-    }
-
-    /**
-     * the indent of a text block is determined by identifying the sequence
-     * of blank characters that is shared/the same across all lines of the text block.
-     * @param lines
-     * @return the count which is currentColumn.
-     */
-
-    private static int getIndent(String[] lines) {
-        int currentColumn = 0;
-        while (true) {
-            String prevChar = null;
-            for (String line : lines) {
-                if (!line.isBlank()) {
-                    if (currentColumn == line.length()) {
-                        return currentColumn;
-                    }
-                    String currentChar = line.substring(currentColumn, currentColumn + 1);
-                    if (!currentChar.isBlank() || (prevChar != null && !prevChar.equals(currentChar))) {
-                        return currentColumn;
-                    }
-                    prevChar = currentChar;
-                }
-            }
-            currentColumn++;
-        }
-
-    }
-
-    /**
-     * This is method it's works by reading  the text from the top then from the bottom by each line
-     * and see where is the text. if there is a empty lines before or after the text , then this method going to remove it.
+     * Removes leading and traling empty lines from the given text.
      *
      * @param text
-     * @return text without trailing and leading  empty lines
+     *     The text.
+     * @return The text without trailing and leading  empty lines.
      */
-
     private static String removeBlankLeadingAndTrailingLines(String text) {
         String[] lines = text.split("\\n");
 
@@ -114,5 +64,58 @@ public class IndentHelper {
             }
         }
         return resultBuilder.toString();
+    }
+
+    /**
+     * Determines the number columns that are represent identical indentation used in all lines of the text.
+     * <p>
+     * Blank lines are not considered for calculation.
+     *
+     * @param lines
+     *     The lines.
+     * @return The count of columns which represent the indent.
+     */
+    private static int getIndent(String[] lines) {
+        int currentColumn = 0;
+        while (true) {
+            String prevChar = null;
+            for (String line : lines) {
+                if (!line.isBlank()) {
+                    if (currentColumn == line.length()) {
+                        return currentColumn;
+                    }
+                    String currentChar = line.substring(currentColumn, currentColumn + 1);
+                    if (!currentChar.isBlank() || (prevChar != null && !prevChar.equals(currentChar))) {
+                        return currentColumn;
+                    }
+                    prevChar = currentChar;
+                }
+            }
+            currentColumn++;
+        }
+    }
+
+    /**
+     * Removes the specified indentation from each line in the provided array of lines and strips the trailing blanks from each line.
+     * @param lines  The lines.
+     * @param indent The number of leading whitespace characters to be removed from each line
+     * @return The text with indentation removed
+     */
+    private static String removeIndent(String[] lines, int indent) {
+        StringBuilder resultBuilder = new StringBuilder();
+        for (int i = 0; i < lines.length; i++) {
+            // We replace all trailing whitespaces from each line.
+            String line = lines[i].replaceAll("\\s+$", "");
+            if (!line.isBlank()) {
+                resultBuilder.append(line.substring(indent));
+            } else {
+                resultBuilder.append(lines[i]);
+            }
+            if (i < lines.length - 1) {
+                resultBuilder.append("\n");
+            }
+        }
+        return resultBuilder.toString();
+
     }
 }
