@@ -29,7 +29,6 @@ import static java.nio.file.Files.createTempDirectory;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.apache.commons.io.FileUtils.copyFileToDirectory;
-import static org.apache.commons.io.FileUtils.deleteDirectory;
 
 /**
  * {@link Store} implementation using an embedded Neo4j instance.
@@ -91,7 +90,7 @@ public class EmbeddedGraphStore extends AbstractGraphStore {
         }
         log.info("Resolving {} Neo4j plugins.", plugins.size());
         List<File> files = artifactProvider.resolve(plugins);
-        File neo4jPluginDirectory = getNeo4jPluginDirectory();
+        File neo4jPluginDirectory = getNeo4jPluginDirectory(embedded);
         for (File file : files) {
             try {
                 copyFileToDirectory(file, neo4jPluginDirectory);
@@ -99,27 +98,19 @@ public class EmbeddedGraphStore extends AbstractGraphStore {
                 throw new IllegalStateException("Cannot copy Neo4j plugins to " + neo4jPluginDirectory, e);
             }
         }
-        log.info("Installed {} artifacts into Neo4j plugin directory {}.", files.size(), neo4jPluginDirectory);
+        log.info("Installed {} artifacts into Neo4j plugin directory '{}'.", files.size(), neo4jPluginDirectory.getAbsolutePath());
         return of(neo4jPluginDirectory);
     }
 
-    @Override
-    protected final void cleanup() {
-        this.neo4jPluginDirectory.ifPresent(dir -> {
-            try {
-                deleteDirectory(dir);
-            } catch (IOException e) {
-                log.warn("Cannot delete Neo4j plugin directory: " + dir, e);
-            }
-        });
-    }
-
-    private static File getNeo4jPluginDirectory() {
-        try {
-            return createTempDirectory(NEO4J_PLUGIN_DIR_PREFIX).toFile();
-        } catch (IOException e) {
-            throw new IllegalStateException("Cannot create Neo4j plugin directory.", e);
-        }
+    private static File getNeo4jPluginDirectory(Embedded embedded) {
+        return embedded.neo4jPluginDirectory()
+            .orElseGet(() -> {
+                try {
+                    return createTempDirectory(NEO4J_PLUGIN_DIR_PREFIX).toFile();
+                } catch (IOException e) {
+                    throw new IllegalStateException("Cannot create Neo4j plugin directory.", e);
+                }
+            });
     }
 
     @Override

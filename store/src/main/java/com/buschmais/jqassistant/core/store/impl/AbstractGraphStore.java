@@ -11,8 +11,13 @@ import com.buschmais.jqassistant.core.store.api.Store;
 import com.buschmais.jqassistant.core.store.api.model.Descriptor;
 import com.buschmais.jqassistant.core.store.api.model.FullQualifiedNameDescriptor;
 import com.buschmais.jqassistant.core.store.spi.StorePluginRepository;
-import com.buschmais.xo.api.*;
+import com.buschmais.xo.api.Example;
 import com.buschmais.xo.api.Query.Result;
+import com.buschmais.xo.api.ResultIterable;
+import com.buschmais.xo.api.ValidationMode;
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XO;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 
@@ -82,7 +87,6 @@ public abstract class AbstractGraphStore implements Store {
         if (xoManagerFactory != null) {
             xoManagerFactory.close();
         }
-        cleanup();
     }
 
     @Override
@@ -299,8 +303,6 @@ public abstract class AbstractGraphStore implements Store {
      * Initialize the store.
      */
     protected abstract void initialize(XOManagerFactory xoManagerFactory);
-
-    protected abstract void cleanup();
 
     protected abstract int getAutocommitThreshold();
 
