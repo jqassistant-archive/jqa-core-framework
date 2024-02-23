@@ -14,7 +14,7 @@ import com.buschmais.jqassistant.core.store.api.configuration.Embedded;
 import com.buschmais.jqassistant.core.store.spi.StorePluginRepository;
 import com.buschmais.jqassistant.neo4j.embedded.EmbeddedNeo4jServer;
 import com.buschmais.jqassistant.neo4j.embedded.EmbeddedNeo4jServerFactory;
-import com.buschmais.jqassistant.neo4j.embedded.neo4jv4.Neo4jV4ServerFactory;
+import com.buschmais.jqassistant.neo4j.embedded.impl.Neo4jCommunityServerFactory;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession;
@@ -49,8 +49,6 @@ public class EmbeddedGraphStore extends AbstractGraphStore {
 
     private final ArtifactProvider artifactProvider;
 
-    private Optional<File> neo4jPluginDirectory;
-
     /**
      * Constructor.
      *
@@ -75,9 +73,9 @@ public class EmbeddedGraphStore extends AbstractGraphStore {
     }
     @Override
     protected XOUnit configure(XOUnit.XOUnitBuilder builder) {
-        this.neo4jPluginDirectory = resolveNeo4jPlugins();
+        Optional<File> neo4jPluginDirectory = resolveNeo4jPlugins();
         Properties properties = serverFactory.getProperties(this.embedded.connectorEnabled(), this.embedded.listenAddress(), this.embedded.boltPort(),
-            this.neo4jPluginDirectory);
+            neo4jPluginDirectory);
         builder.properties(properties);
         builder.provider(EmbeddedNeo4jXOProvider.class);
         return builder.build();
@@ -88,18 +86,18 @@ public class EmbeddedGraphStore extends AbstractGraphStore {
         if (plugins.isEmpty()) {
             return empty();
         }
-        log.info("Resolving {} Neo4j plugins.", plugins.size());
+        log.info("Resolving {} Neo4j plugin(s).", plugins.size());
         List<File> files = artifactProvider.resolve(plugins);
-        File neo4jPluginDirectory = getNeo4jPluginDirectory(embedded);
+        File pluginDirectory = getNeo4jPluginDirectory(embedded);
         for (File file : files) {
             try {
-                copyFileToDirectory(file, neo4jPluginDirectory);
+                copyFileToDirectory(file, pluginDirectory);
             } catch (IOException e) {
-                throw new IllegalStateException("Cannot copy Neo4j plugins to " + neo4jPluginDirectory, e);
+                throw new IllegalStateException("Cannot copy Neo4j plugins to " + pluginDirectory, e);
             }
         }
-        log.info("Installed {} artifacts into Neo4j plugin directory '{}'.", files.size(), neo4jPluginDirectory.getAbsolutePath());
-        return of(neo4jPluginDirectory);
+        log.info("Installed {} artifact(s) into Neo4j plugin directory '{}'.", files.size(), pluginDirectory.getAbsolutePath());
+        return of(pluginDirectory);
     }
 
     private static File getNeo4jPluginDirectory(Embedded embedded) {
@@ -131,7 +129,7 @@ public class EmbeddedGraphStore extends AbstractGraphStore {
     }
 
     private EmbeddedNeo4jServerFactory getEmbeddedNeo4jServerFactory() {
-        return new Neo4jV4ServerFactory();
+        return new Neo4jCommunityServerFactory();
     }
 
     @Override
