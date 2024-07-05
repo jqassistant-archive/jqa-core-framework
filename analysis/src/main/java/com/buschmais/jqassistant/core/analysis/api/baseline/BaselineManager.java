@@ -22,12 +22,13 @@ import lombok.RequiredArgsConstructor;
  *     <li>A baseline exists but does not yet contain the {@link Row}.</li>
  * </ul>
  * <p>
- * Only {@link Row}s that have been validated using {@link #isNew(ExecutableRule, Row)} (Constraint, Row)} are copied to the new baseline.
- * This means that between two executions resolved {@link Constraint} violations are removed from the baseline.
+ * Only {@link Row}s that have been validated using {@link #isNew(ExecutableRule, Row)} ({@link ExecutableRule}, Row)} are copied to the new baseline.
  * <p>
  */
 @RequiredArgsConstructor
 public class BaselineManager {
+
+    private final com.buschmais.jqassistant.core.analysis.api.configuration.Baseline configuration;
 
     private final Optional<Baseline> optionalOldBaseline;
 

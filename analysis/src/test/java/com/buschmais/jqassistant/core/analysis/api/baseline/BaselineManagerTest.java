@@ -11,14 +11,18 @@ import com.buschmais.jqassistant.core.rule.api.model.Concept;
 import com.buschmais.jqassistant.core.rule.api.model.Constraint;
 import com.buschmais.jqassistant.core.rule.api.model.ExecutableRule;
 
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(MockitoExtension.class)
 class BaselineManagerTest {
 
     private static Stream<Arguments> rules() {
@@ -29,6 +33,9 @@ class BaselineManagerTest {
             .build()));
     }
 
+    @Mock
+    private com.buschmais.jqassistant.core.analysis.api.configuration.Baseline configuration;
+
     @ParameterizedTest
     @MethodSource("rules")
     void noBaselineWithNewConstraintViolation(ExecutableRule<?> executableRule) {
@@ -38,7 +45,7 @@ class BaselineManagerTest {
                 .label("1")
                 .build()))
             .build();
-        BaselineManager baselineManager = new BaselineManager(empty());
+        BaselineManager baselineManager = new BaselineManager(configuration,empty());
 
         assertThat(baselineManager.isNew(executableRule, row)).isTrue();
 
@@ -56,7 +63,7 @@ class BaselineManagerTest {
                 .label("1")
                 .build()))
             .build();
-        BaselineManager baselineManager = new BaselineManager(of(oldBaseline));
+        BaselineManager baselineManager = new BaselineManager(configuration, of(oldBaseline));
 
         assertThat(baselineManager.isNew(executableRule, row)).isFalse();
 
@@ -80,7 +87,7 @@ class BaselineManagerTest {
                 .label("2")
                 .build()))
             .build();
-        BaselineManager baselineManager = new BaselineManager(of(oldBaseline));
+        BaselineManager baselineManager = new BaselineManager(configuration, of(oldBaseline));
 
         assertThat(baselineManager.isNew(executableRule, oldRow)).isFalse();
         assertThat(baselineManager.isNew(executableRule, newRow)).isTrue();
@@ -99,7 +106,7 @@ class BaselineManagerTest {
                 .label("1")
                 .build()))
             .build();
-        BaselineManager baselineManager = new BaselineManager(of(oldBaseline));
+        BaselineManager baselineManager = new BaselineManager(configuration, of(oldBaseline));
 
         assertThat(baselineManager.isNew(executableRule, row)).isFalse();
 
